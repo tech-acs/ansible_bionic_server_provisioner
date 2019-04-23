@@ -1,0 +1,28 @@
+---
+- block:
+
+    - name: Change locale
+      command: /usr/sbin/update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
+      notify: update tzdata
+
+    - name: Remove default nginx config file
+      file: path=/etc/nginx/sites-enabled/default state=absent
+
+    - name: Add nginx site config
+      template: src=site.conf.j2 dest="/etc/nginx/sites-enabled/{{ app }}"
+      notify:
+        - Restart nginx
+
+    - name: Add the host names to hosts file
+      lineinfile: dest=/etc/hosts line={{ item }} state=present
+      with_items:
+        - "127.0.0.1 {{ app }}"
+
+    - name: Add user {{ansible_env.USER}} to www-data group
+      user: name={{ansible_env.USER}} groups=www-data append=yes
+
+    - name: Add user www-data to {{ansible_env.USER}} group
+      user: name=www-data groups={{ansible_env.USER}} append=yes
+
+  become: yes
+  become_user: root

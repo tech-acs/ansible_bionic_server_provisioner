@@ -1,0 +1,54 @@
+---
+- block:
+
+    - name: Add an Apt signing key, uses whichever key is at the URL
+      apt_key:
+        url: https://packages.microsoft.com/keys/microsoft.asc
+        state: present
+
+    - name: Add repository for Microsoft ODBC Driver for SQL Server
+      apt_repository:
+        repo: 'deb [arch=amd64] https://packages.microsoft.com/ubuntu/18.04/prod bionic main'
+        state: present
+        filename: mssql-release
+        update_cache: yes
+
+    - name: Install msodbcsql17 and unixodbc-dev
+      apt: pkg={{ item }} state=present
+      with_items:
+        - msodbcsql17
+        - unixodbc-dev
+      environment:
+        ACCEPT_EULA: 'y'
+
+    - name: Install sqlsrv and pdo_sqlsrv via pear/pecl
+      pear:
+        name: pecl/{{ item }}
+        state: present
+      with_items:
+        - sqlsrv
+        - pdo_sqlsrv
+
+    - name: Load driver files sqlsrv.so & pdo_sqlsrv.so
+      lineinfile:
+        path: /etc/php/7.2/mods-available/{{ item.file }}
+        line: 'extension={{ item.driver }}'
+        state: present
+        create: yes
+      with_items:
+        - { file: 'sqlsrv.ini', driver: 'sqlsrv.so' }
+        - { file: 'pdo_sqlsrv.ini', driver: 'pdo_sqlsrv.so' }
+
+    - name: Enable the extension for cli and fpm
+      file:
+        src: '/etc/php/7.2/mods-available/{{ item.src }}'
+        dest: '/etc/php/7.2/{{ item.dest }}'
+        state: link
+      with_items:
+        - { src: 'sqlsrv.ini', dest: 'cli/conf.d/20-sqlsrv.ini' }
+        - { src: 'pdo_sqlsrv.ini', dest: 'cli/conf.d/20-pdo_sqlsrv.ini' }
+        - { src: 'sqlsrv.ini', dest: 'fpm/conf.d/20-sqlsrv.ini' }
+        - { src: 'pdo_sqlsrv.ini', dest: 'fpm/conf.d/20-pdo_sqlsrv.ini' }
+
+  become: yes
+  become_user: root

@@ -1,0 +1,21 @@
+---
+- name: Provision an Ubuntu 18.04 Web Application Server
+  hosts: all
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+    www_path: /home/{{ansible_env.HOME}}/www/
+    app: 'provisioner_backend'
+  roles:
+     - common
+     - nginx_and_php
+     - role: postgres
+       become: yes
+       vars:
+        postgresql_databases:
+          - name: kphc2019
+     - role: deploy
+       vars:
+        repo: 'https://github.com/amestsantim/provisioner_backend.git'
+     - configurations
+     - redis
+# 	ansible-playbook provision.yml -i hosts --ask-become-pass
