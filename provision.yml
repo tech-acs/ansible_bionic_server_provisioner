@@ -3,7 +3,7 @@
   hosts: all
   vars:
     ansible_python_interpreter: /usr/bin/python3
-    www_path: {{ansible_env.HOME}}/www/
+    www_path: {{ansible_env.HOME}}www/
     app: 'provisioner_backend'
   roles:
      - common
@@ -12,10 +12,11 @@
        become: yes
        vars:
         postgresql_databases:
-          - name: kphc2019
+          - name: phc20xx
      - role: deploy
        vars:
         repo: 'https://github.com/amestsantim/provisioner_backend.git'
      - configurations
      - redis
+
 # 	ansible-playbook provision.yml -i hosts --ask-become-pass

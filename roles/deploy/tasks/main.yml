@@ -8,7 +8,7 @@
        working_dir: "{{ www_path }}/{{ app }}"
 
   - name: Change folder permissions (www/*)
-    file: path={{ www_path }}/{{ app }}/{{ item }} owner=www-data group=www-data mode=0777 recurse=yes
+    file: path={{ www_path }}/{{ app }}/{{ item }} mode=0777 recurse=yes
     with_items:
       - storage
       - bootstrap/cache
