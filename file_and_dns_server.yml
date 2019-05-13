@@ -3,7 +3,7 @@
   hosts: all
   vars:
     ansible_python_interpreter: /usr/bin/python3
-    www_path: {{ansible_env.HOME}}www/
+    www_path: '{{ansible_env.HOME}}/www/'
   roles:
      - common
      - nginx_and_php
