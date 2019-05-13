@@ -18,5 +18,8 @@
         repo: 'https://github.com/amestsantim/provisioner_backend.git'
      - configurations
      - redis
+     - role: dnsmasq
+       vars:
+        web_server_ip_address: '192.168.1.10'
 
 # 	ansible-playbook provision.yml -i hosts --ask-become-pass

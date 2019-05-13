@@ -1,0 +1,22 @@
+---
+- block:
+    - name: Install dnsmasq
+      apt: pkg=dnsmasq state=present
+      notify:
+        - Restart dnsmasq
+
+    - name: copy dnsmasq config file
+      copy:
+        src: dnsmasq.config
+        dest: /etc/dnsmasq.config
+
+    - name: Add IP address of hosts to be resolved to /etc/hosts
+      lineinfile:
+        dest: /etc/hosts
+        line: "{{ web_server_ip_address }} provisioner.com"
+        state: present
+      notify:
+        - Restart dnsmasq
+
+  become: yes
+  become_user: root
