@@ -1,0 +1,17 @@
+---
+- name: Provision an Ubuntu 18.04 Web Application Server
+  hosts: all
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+    www_path: {{ansible_env.HOME}}www/
+  roles:
+     - common
+     - nginx_and_php
+     - role: dnsmasq
+       vars:
+        web_server_ip_address: '192.168.1.10'
+
+
+#   1) Edit your hosts file
+#   2) Edit this file an put in the right values for the various vars 
+# 	3) Run: ansible-playbook file_and_dns_server.yml -i hosts --ask-become-pass
