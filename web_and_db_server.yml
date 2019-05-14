@@ -13,6 +13,9 @@
        vars:
         postgresql_databases:
           - name: phc20xx
+        postgresql_users:
+          - name: postgres
+            password: postgres
      - role: deploy
        vars:
         repo: 'https://github.com/amestsantim/provisioner_backend.git'
@@ -22,4 +25,4 @@
 
 #   1) Edit your hosts file
 #   2) Edit this file an put in the right values for the various vars 
-# 	3) Run: ansible-playbook web_and_db_server.yml -i hosts --ask-become-pass
+# 	3) Run: ansible-playbook web_and_db_server.yml -i hosts --ask-become-pass (--ask-pass is only needed if your hosts are remote)

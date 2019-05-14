@@ -1,5 +1,10 @@
 ---
-- name: Restart dnsmasq
-  service:
-    name: dnsmasq
-    state: restarted
+- block:
+
+  - name: Restart dnsmasq
+    service:
+      name: dnsmasq
+      state: restarted
+
+  become: yes
+  become_user: root

@@ -1,5 +1,11 @@
 ---
 - block:
+    - name: Disable systemd-resolved
+      systemd:
+        name: systemd-resolved
+        enabled: no
+        state: stopped
+      
     - name: Install dnsmasq
       apt: pkg=dnsmasq state=present
       notify:
