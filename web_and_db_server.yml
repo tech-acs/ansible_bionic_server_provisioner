@@ -16,6 +16,7 @@
         postgresql_users:
           - name: postgres
             password: postgres
+            encrypted: true
      - role: deploy
        vars:
         repo: 'https://github.com/amestsantim/provisioner_backend.git'

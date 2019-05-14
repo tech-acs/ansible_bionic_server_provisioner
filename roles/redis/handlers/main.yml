@@ -1,6 +1,10 @@
 ---
+- block:
 
-- name: restart redis-server
-  systemd:
-    name: redis
-    state: restarted
+  - name: Restart redis-server
+    systemd:
+      name: redis
+      state: restarted
+
+  become: yes
+  become_user: root
