@@ -14,7 +14,7 @@
         group: root
         mode: 0644
         force: true
-      notify: restart redis-server
+      notify: Restart redis-server
 
     - name: Add user www-data to group redis
       user:
