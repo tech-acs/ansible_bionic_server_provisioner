@@ -12,7 +12,7 @@
        become: yes
        vars:
         postgresql_databases:
-          - name: phc20xx
+          - name: phc
         postgresql_users:
           - name: postgres
             password: postgres
