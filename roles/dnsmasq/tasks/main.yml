@@ -1,28 +1,23 @@
 ---
-- block:
-    - name: Disable systemd-resolved
-      systemd:
-        name: systemd-resolved
-        enabled: no
-        state: stopped
-      
-    - name: Install dnsmasq
-      apt: pkg=dnsmasq state=present
-      notify:
-        - Restart dnsmasq
+# tasks file for ansible-dnsmasq
+- include: alpine.yml
+  when: ansible_os_family == "Alpine"
 
-    - name: copy dnsmasq config file
-      copy:
-        src: dnsmasq.config
-        dest: /etc/dnsmasq.config
+- include: debian.yml
+  when: ansible_os_family == "Debian"
 
-    - name: Add IP address of hosts to be resolved to /etc/hosts
-      lineinfile:
-        dest: /etc/hosts
-        line: "{{ web_server_ip_address }} provisioner.com"
-        state: present
-      notify:
-        - Restart dnsmasq
+- include: redhat.yml
+  when: ansible_os_family == "RedHat"
 
-  become: yes
-  become_user: root
+- include: opensuse.yml
+  when: ansible_os_family == "openSUSE Leap"
+
+- include: config_dnsmasq.yml
+  tags:
+    - dnsmasq_config
+  when: dnsmasq_config
+
+- include: systemd_resolved.yml
+  when: >
+    ansible_service_mgr == "systemd" and
+    dnsmasq_systemd_resolved_disable

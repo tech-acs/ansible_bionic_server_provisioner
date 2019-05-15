@@ -1,7 +1,7 @@
 server {
 	listen 80;
 
-	root {{ www_path }}{{ app }}/public;
+	root {{ www_path }}{{ app }}/{{ is_not_laravel | default('public') }};
 	index index.php index.html index.htm;
 
 	server_name {{ app }};

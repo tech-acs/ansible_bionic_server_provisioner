@@ -1,5 +1,5 @@
 ---
-- name: Provision an Ubuntu 18.04 File and DNS Server
+- name: Provision an Ubuntu 18.04 File Server
   hosts: all
   vars:
     ansible_python_interpreter: /usr/bin/python3
@@ -13,11 +13,6 @@
   roles:
      - common
      - nginx_and_php
-     - role: dnsmasq
-       vars:
-        dnsmasq_static_addresses:
-        - address: '192.168.1.10'
-          name: 'provisioner.com'
      - role: configurations
        vars:
         is_not_laravel: ''

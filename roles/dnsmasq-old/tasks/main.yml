@@ -1,0 +1,32 @@
+---
+- block:
+    - name: Disable systemd-resolved
+      systemd:
+        name: systemd-resolved
+        enabled: no
+        state: stopped
+      
+    - name: Install dnsmasq
+      apt: pkg=dnsmasq state=present
+
+    - name: copy dnsmasq config file
+      copy:
+        src: dnsmasq.config
+        dest: /etc/dnsmasq.config
+
+    - name: Add IP address of hosts to be resolved to /etc/hosts
+      lineinfile:
+        dest: /etc/hosts
+        line: "{{ web_server_ip_address }} provisioner.com"
+        state: present
+      notify:
+        - Restart dnsmasq
+
+    - name: Make sure Dnsmasq is running
+      service:
+        name: dnsmasq
+        state: started
+        enabled: yes
+
+  become: yes
+  become_user: root
