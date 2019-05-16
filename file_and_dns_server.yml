@@ -16,6 +16,7 @@
         dest: /etc/hosts
         line: "{{ web_server_ip_address }} provisioner.com"
         state: present
+      become: true
 
   roles:
      - common
