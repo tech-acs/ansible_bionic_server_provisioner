@@ -5,19 +5,22 @@
     ansible_python_interpreter: /usr/bin/python3
     www_path: '{{ansible_env.HOME}}/www/'
     app: 'file_server'
+    web_server_ip_address: '192.168.1.2'
 
   pre_tasks:
     - name: Create file server base directory (for nginx)
       file: path='{{ansible_env.HOME}}/www/{{app}}' state=directory
 
+    - name: Add IP address of hosts to be resolved to /etc/hosts
+      lineinfile:
+        dest: /etc/hosts
+        line: "{{ web_server_ip_address }} provisioner.com"
+        state: present
+
   roles:
      - common
      - nginx_and_php
-     - role: dnsmasq
-       vars:
-        dnsmasq_static_addresses:
-        - address: '192.168.1.10'
-          name: 'provisioner.com'
+     - dnsmasq
      - role: configurations
        vars:
         is_not_laravel: ''

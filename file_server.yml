@@ -20,4 +20,4 @@
 
 #   1) Edit your hosts file
 #   2) Edit this file an put in the right values for the various vars 
-#   3) Run: ansible-playbook file_and_dns_server.yml -i hosts --ask-become-pass (--ask-pass is only needed if your hosts are remote)
+#   3) Run: ansible-playbook paybook_name.yml -i hosts --ask-become-pass (--ask-pass is only needed if your hosts are remote)
