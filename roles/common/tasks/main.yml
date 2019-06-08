@@ -2,6 +2,7 @@
 - block:
     - name: "Update cache"
       apt: update_cache=yes
+      ignore_errors: yes
 
     - name: Install common apps
       apt: pkg={{ item }} state=present
