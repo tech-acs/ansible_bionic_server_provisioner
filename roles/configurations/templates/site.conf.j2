@@ -22,3 +22,30 @@ server {
 		include fastcgi_params;
 	}
 }
+
+server {
+	listen *:443 ssl http2;
+
+	root {{ www_path }}{{ app }}/{{ is_not_laravel | default('public') }};
+	index index.php index.html index.htm;
+
+	server_name {{ app }};
+	ssl_certificate '{{ansible_env.HOME}}/localhost+3.pem'; 
+   	ssl_certificate_key '{{ansible_env.HOME}}/localhost+3-key.pem';
+
+	location / {
+		autoindex on;
+
+		# First attempt to serve request as file, then
+		# as directory, then fall back to displaying a 404.
+		try_files $uri $uri/ /index.php?$query_string;
+	}
+
+	location ~ \.php$ {
+		fastcgi_split_path_info ^(.+\.php)(/.+)$;
+		fastcgi_pass unix:/var/run/php/php7.2-fpm.sock;
+		fastcgi_index index.php;
+		fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+		include fastcgi_params;
+	}
+}

@@ -25,6 +25,7 @@
      - role: configurations
        vars:
         is_not_laravel: ''
+     - https
 
 
 #   1) Edit your hosts file

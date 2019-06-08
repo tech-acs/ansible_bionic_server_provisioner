@@ -1,0 +1,28 @@
+---
+- block:
+    - name: Update cache
+      apt: update_cache=yes
+      ignore_errors: yes
+
+    - name: Install certutil dependencies
+      apt: pkg={{ item }} state=present
+      with_items:
+        - wget
+        - libnss3-tools
+
+    - name: Download mkcert (v1.3.0) from github release
+      get_url:
+        url: https://github.com/FiloSottile/mkcert/releases/download/v1.3.0/mkcert-v1.3.0-linux-amd64
+        dest: /usr/local/bin/mkcert
+        mode: '0755'
+
+  become: yes
+  become_user: root
+
+- name: Install the local CA in the system trust store.
+  shell: mkcert -install
+
+- name: Generating SSL certificates for domains
+  shell: mkcert localhost provisioner.com 127.0.0.1 ::1
+  args:
+    chdir: '{{ansible_env.HOME}}'
