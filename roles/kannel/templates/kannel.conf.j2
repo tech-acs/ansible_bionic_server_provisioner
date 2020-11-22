@@ -1,0 +1,62 @@
+# BEARERBOX
+
+## Core group
+group = core
+admin-port = 13003
+admin-password = kanneladminpwd
+admin-deny-ip = "*.*.*.*"
+admin-allow-ip = "127.0.0.1"
+#status-password = sTat
+smsbox-port = 13099
+store-type = file
+store-location=/var/log/kannel/kannel.store
+#log-file = "/var/log/kannel/core.log"
+#access-log = "/var/log/kannel/access.log"
+
+## Smsc (SMS center) group [x2]
+group = smsc
+smsc = smpp
+smsc-id = {{app}}
+smsc-username = 009503
+smsc-password = teddy#12
+host = 10.190.10.16
+port = 8313
+transceiver-mode = 1
+throughput = 50
+#allowed-smsc-id = {{app}}
+system-type = ""
+address-range = ""
+#log-file = /var/log/kannel/smsc.log
+
+# -----------------------------------------------------------------------------
+
+# SMSBOX
+
+## Smsbox group
+group = smsbox
+smsbox-id = {{app}}
+sendsms-port = 13013
+bearerbox-host = 127.0.0.1
+#log-file = "/var/log/kannel/smsbox.log"
+mo-recode = true
+
+## Smsbox route
+group = smsbox-route
+smsbox-id = {{app}}
+smsc-id = {{app}}
+
+## Sendsms-user group [x2]
+group = sendsms-user
+username = {{app}}
+password = {{app}}
+forced-smsc = {{app}}
+concatenation = true
+max-messages = 3
+default-sender = 8416
+
+## Sms-service group [x2]
+group = sms-service
+accepted-smsc = {{app}}
+keyword = default
+get-url = "http://{{app}}/api/mo_sms_url?from=%p&content=%a"
+max-messages = 0

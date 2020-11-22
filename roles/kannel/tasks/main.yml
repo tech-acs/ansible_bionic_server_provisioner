@@ -1,0 +1,35 @@
+---
+  - name: Install and configure kannel
+    block:
+      - name: Install kannel
+        package: 
+          state: present
+          name:
+            - kannel
+
+      - name: Copy kannel.conf
+        template:
+          src: kannel.conf.j2
+          dest: /etc/kannel/kannel.conf
+
+      - name: Disable Wapbox
+        lineinfile:
+          path: /etc/default/kannel
+          regexp: '^START_WAPBOX=1'
+          line: '#START_WAPBOX=1'
+        
+      - name: Enable Smsbox
+        lineinfile:
+          path: /etc/default/kannel
+          regexp: '^#START_SMSBOX=1'
+          line: 'START_SMSBOX=1'
+
+      - name: Install reboot every midnight cron job
+        cron:
+          name: "Delete any lingering messages in kannel store"
+          minute: "0"
+          hour: "20"
+          job: "cd /var/log/kannel && service kannel stop && rm -f kannel.store* && service kannel start"
+
+    become: yes
+    

@@ -24,5 +24,31 @@
     - name: Add user www-data to {{ansible_env.USER}} group
       user: name=www-data groups={{ansible_env.USER}} append=yes
 
+    - name: Copy systemd unit file
+      template:
+        src: horizon.service.j2
+        dest: '/etc/systemd/system/horizon-{{ app }}.service'
+      become: yes
+
+    - name: Enable the horizon service
+      systemd:
+        daemon_reload: yes
+        name: 'horizon-{{ app }}.service'
+        enabled: yes
+        state: started
+
+    - name: Install reboot every midnight cron job
+      cron:
+        name: "Reboot at midnight"
+        minute: "0"
+        hour: "0"
+        job: "/sbin/shutdown -r now"
+      become: yes
+
   become: yes
   become_user: root
+
+- name: Install laravel scheduled tasks cron job
+  cron:
+    name: "Laravel scheduler"
+    job: "cd /{{ www_path }}/{{ app }} && php artisan schedule:run >> /dev/null 2>&1"

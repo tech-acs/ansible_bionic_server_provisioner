@@ -5,11 +5,13 @@
       ignore_errors: yes
 
     - name: Install common apps
-      apt: pkg={{ item }} state=present
-      with_items:
-        - git
-        - vim
-        - supervisor
+      package: 
+        state: present
+        name:
+          - git
+          - vim
+          - redis
+          - sqlite3
 
   become: yes
   become_user: root

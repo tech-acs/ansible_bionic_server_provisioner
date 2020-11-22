@@ -1,0 +1,25 @@
+---
+- name: Provision an Ubuntu 18.04 server
+  hosts: all
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+    www_path: '{{ansible_env.HOME}}/www/'
+    #app: 'vas'
+  roles:
+     - common
+     - nginx_and_php
+     - redis
+     - kannel
+     - webdis
+     - role: geerlingguy.postgresql
+       become: yes
+       vars_files:
+        - vars/main.yml
+     - role: deploy
+       vars:
+        repo: 'https://amestsantim:Sonata71!@github.com/amestsantim/awashtube.git'
+     - configurations
+
+#   1) Edit your hosts file
+#   2) Edit this file an put in the right values for the various vars 
+#   3) Run: ansible-playbook web_and_db_server.yml -i hosts --ask-become-pass (--ask-pass is only needed if your hosts are remote)

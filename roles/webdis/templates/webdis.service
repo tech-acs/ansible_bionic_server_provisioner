@@ -1,0 +1,14 @@
+[Unit]
+Description=Webdis Service
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+ExecStart=/usr/share/webdis/webdis
+# User=alphatech
+Restart=always
+RestartSec=1
+
+[Install]
+WantedBy=multi-user.target
