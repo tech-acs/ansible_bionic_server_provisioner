@@ -7,7 +7,7 @@
        command: install
        working_dir: "{{ www_path }}/{{ app }}"
 
-  - name: Change folder permissions (www/*)
+  - name: Change folder permissions
     file: path={{ www_path }}/{{ app }}/{{ item }} mode=0777 recurse=yes
     with_items:
       - storage

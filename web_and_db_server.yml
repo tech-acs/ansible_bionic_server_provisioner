@@ -1,5 +1,5 @@
 ---
-- name: Provision an Ubuntu 18.04 Web Application and Database Server
+- name: Provision an Ubuntu Web Application and Database Server
   hosts: all
   vars:
     ansible_python_interpreter: /usr/bin/python3
@@ -8,15 +8,10 @@
   roles:
      - common
      - nginx_and_php
-     - role: postgres
+     - role: geerlingguy.postgresql
        become: yes
-       vars:
-        postgresql_databases:
-          - name: phc
-        postgresql_users:
-          - name: postgres
-            password: postgres
-            encrypted: true
+       vars_files:
+        - vars/main.yml
      - role: deploy
        vars:
         repo: 'https://github.com/amestsantim/provisioner_backend.git'

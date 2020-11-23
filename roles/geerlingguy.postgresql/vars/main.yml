@@ -4,4 +4,3 @@ postgresql_users:
   - name: postgres
     password: postgres
     encrypted: true
-# postgresql_data_dir: "{{ansible_env.HOME}}/postgresql/{{ __postgresql_version }}/main"

@@ -1,5 +1,5 @@
 ---
-- name: Provision an Ubuntu 18.04 File and DNS Server
+- name: Provision an Ubuntu File and DNS Server
   hosts: all
   vars:
     ansible_python_interpreter: /usr/bin/python3
