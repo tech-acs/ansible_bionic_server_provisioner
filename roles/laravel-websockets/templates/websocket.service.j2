@@ -1,9 +1,9 @@
 [Unit]
-Description=Laravel Horizon Queue Manager ({{ app }})
+Description=Laravel websockets
 After=network.target auditd.service
 
 [Service]
-ExecStart=/usr/bin/php {{ www_path }}/{{ app }}/artisan horizon
+ExecStart=/usr/bin/php {{ www_path }}/{{ app }}/artisan websockets:serve
 # User=www-data
 # Group=www-data
 Restart=always

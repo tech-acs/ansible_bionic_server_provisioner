@@ -1,0 +1,14 @@
+
+[Unit]
+Description=GeoServer
+After=network.target
+
+[Service]
+# User=geoserver
+Environment=JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+Environment=GEOSERVER_HOME='{www_path}/geoserver'
+ExecStart='{www_path}/geoserver/bin/startup.sh'
+ExecStop='{www_path}/geoserver/bin/shutdown.sh'
+
+[Install]
+WantedBy=multi-user.target
