@@ -1,8 +1,12 @@
 ---
 - block:
     - name: "Update cache"
-      apt: update_cache=yes
-      ignore_errors: yes
+      apt: 
+        update_cache: yes
+        
+    - name: Change locale
+      command: /usr/sbin/update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
+      notify: update tzdata
 
     - name: Install common apps
       package: 

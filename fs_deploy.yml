@@ -1,0 +1,24 @@
+---
+- name: Deploy Provisioning File Server
+  hosts: file_server
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+    www_path: '{{ansible_env.HOME}}/www/'
+    app: 'file_server'
+
+  pre_tasks:
+    - name: Create file server base directory (for nginx)
+      file: path='{{ansible_env.HOME}}/www/{{app}}' state=directory
+
+  roles:
+     - common
+     - role: nginx_and_php
+       vars:
+        is_not_laravel: ''
+     - ssl
+
+
+#   1) Edit your hosts file
+#   2) Edit this file and put in the right values for the various vars. Also temporarily put your git credentials in the repo var!
+#   3) Run: ansible-playbook provision_server.yml -i hosts --ask-become-pass --ask-pass --user=root 
+#       (--ask-pass is only needed if your hosts are remote)

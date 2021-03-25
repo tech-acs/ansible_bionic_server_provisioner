@@ -1,0 +1,33 @@
+---
+  - name: Install postgres
+    package: 
+      state: present
+      name:
+        - postgresql
+    become: yes
+    become_user: root
+
+  - name: Install packages required to use community.general.postgresql_db
+    package: 
+      state: present
+      name:
+        - python3-pip
+        - libpq-dev
+        - python3-psycopg2
+    become: yes
+    become_user: root
+
+  - name: Create database
+    community.general.postgresql_db:
+      name: '{{pgdb}}'
+    become: true
+    become_user: '{{pguser}}'
+
+  - name: Connect to database and set user's password
+    community.general.postgresql_user:
+      db: '{{pgdb}}'
+      name: '{{pguser}}'
+      password: '{{pgpass}}'
+    become: true
+    become_user: '{{pguser}}'
+  

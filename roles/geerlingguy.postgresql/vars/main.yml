@@ -1,6 +1,0 @@
-postgresql_databases:
-  - name: '{{app}}'
-postgresql_users:
-  - name: postgres
-    password: postgres
-    encrypted: true

@@ -1,0 +1,27 @@
+---
+- name: Deploy Stats SL Provisioning Web Server
+  hosts: web_server
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+    www_path: '{{ansible_env.HOME}}/www'
+    app: 'provisioning_server'
+  roles:
+     - common
+     - nginx_and_php
+     - role: postgres_simple
+       vars:
+         pgdb: 'provisioner'
+         pguser: 'postgres'
+         pgpass: 'postgres'
+     - role: deploy
+       vars:
+        repo_token: "{{ lookup('env', 'REPO_TOKEN') }}"
+        branch: 'HEAD'
+        repo: 'https://{{repo_token}}@github.com/amestsantim/ghana_provisioning_server.git'
+        secure: true
+     - ssl
+
+#   1) Edit your hosts file
+#   2) Edit this file and put in the right values for the various vars. Also temporarily put your git credentials in the repo var!
+#   3) Run: ansible-playbook web_and_db_server.yml -i hosts --ask-become-pass --ask-pass --user=root 
+#       (--ask-pass is only needed if your hosts are remote)

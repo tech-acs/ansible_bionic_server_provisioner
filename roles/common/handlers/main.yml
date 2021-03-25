@@ -1,2 +1,11 @@
 ---
-# handlers file for common
+- block:
+
+  - name: Restart nginx
+    action: service name=nginx state=restarted
+
+  - name: update tzdata
+    command: /usr/sbin/dpkg-reconfigure --frontend noninteractive tzdata
+
+  become: yes
+  become_user: root

@@ -1,16 +1,81 @@
 ---
   - name: Deploy app from git (git clone)
-    git: repo={{ repo }} dest={{ www_path }}/{{ app }}
+    git: 
+      repo: "{{ repo }}"
+      dest: "{{ www_path }}/{{ app }}"
+      version: '{{branch}}'
 
   - name: Run composer install on app
     composer:
        command: install
        working_dir: "{{ www_path }}/{{ app }}"
 
-  - name: Change folder permissions
-    file: path={{ www_path }}/{{ app }}/{{ item }} mode=0777 recurse=yes
-    with_items:
-      - storage
-      - bootstrap/cache
+  - name: Install laravel scheduled tasks cron job
+    cron:
+      name: "Laravel scheduler"
+      job: "cd {{ www_path }}/{{ app }} && php artisan schedule:run >> /dev/null 2>&1"
+
+  - block:
+    - name: Change folder permissions
+      file: 
+        path: "{{ www_path }}/{{ app }}/{{ item }}"
+        mode: '0777' 
+        recurse: yes
+      loop:
+        - storage
+        - bootstrap/cache
+
+    - name: Remove default nginx config file
+      file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+
+    - name: Add nginx site config (http)
+      template: 
+        src: site.conf.j2
+        dest: "/etc/nginx/sites-enabled/{{ app }}"
+      notify:
+        - Restart nginx
+      when: not secure
+
+    - name: Add nginx site config (https)
+      template: 
+        src: site.withssl.conf.j2
+        dest: "/etc/nginx/sites-enabled/{{ app }}"
+      notify:
+        - Restart nginx
+      when: secure
+
+    - name: Add the host names to hosts file
+      lineinfile:
+        dest: /etc/hosts
+        line: "127.0.0.1 {{ app }}"
+        state: present
+
+    - name: Add user {{ansible_env.USER}} to www-data group
+      user: 
+        name: "{{ansible_env.USER}}" 
+        groups: www-data
+        append: yes
+
+    - name: Add user www-data to {{ansible_env.USER}} group
+      user:
+        name: www-data
+        groups: '{{ansible_env.USER}}'
+        append: yes
+
+    - name: Copy systemd unit file
+      template:
+        src: horizon.service.j2
+        dest: '/etc/systemd/system/horizon.service'
+      become: yes
+
+    - name: Enable the horizon service
+      systemd:
+        daemon_reload: yes
+        name: 'horizon.service'
+        enabled: yes
+        state: started
+
     become: yes
     become_user: root
