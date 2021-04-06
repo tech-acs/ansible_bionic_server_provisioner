@@ -21,8 +21,10 @@
         secure: true
      - ssl
 
-#   1) Edit your hosts file (use 127.0.0.1 ansible_connection=local for localhost)
+#   1) Edit your hosts file (for deploying locally, use this entry: 127.0.0.1 ansible_connection=local)
 #   2) On the controller, export the github repo token (export REPO_TOKEN=token)
 #   3) Edit this file and put in the right values for the various vars.
 #   4) Run: ansible-playbook web_and_db_server.yml -i hosts --ask-become-pass --ask-pass --user=root 
 #       (--ask-pass is only needed if your hosts are remote)
+#   5) postgres_simple role will require a community module to be installed
+#       ansible-galaxy collection install community.postgresql
