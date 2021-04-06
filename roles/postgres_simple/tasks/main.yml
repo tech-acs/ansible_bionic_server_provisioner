@@ -18,13 +18,13 @@
     become_user: root
 
   - name: Create database
-    community.general.postgresql_db:
+    community.postgresql.postgresql_db:
       name: '{{pgdb}}'
     become: true
     become_user: '{{pguser}}'
 
   - name: Connect to database and set user's password
-    community.general.postgresql_user:
+    community.postgresql.postgresql_user:
       db: '{{pgdb}}'
       name: '{{pguser}}'
       password: '{{pgpass}}'
